@@ -1,0 +1,28 @@
+{
+  "name": "vercel-api-proxy",
+  "version": "1.0.0",
+  "description": "Secure API proxy server for realtime-translator and other projects",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "deploy": "vercel --prod",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api-proxy",
+    "vercel",
+    "security",
+    "assemblyai",
+    "deepl"
+  ],
+  "author": "60cod",
+  "license": "MIT",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.1"
+  }
+}
