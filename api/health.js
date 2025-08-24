@@ -1,5 +1,5 @@
 // Health check endpoint
-export default function handler(req, res) {
+module.exports = (req, res) => {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -23,4 +23,4 @@ export default function handler(req, res) {
     };
 
     res.status(200).json(healthData);
-}
+};

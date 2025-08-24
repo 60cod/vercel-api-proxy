@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Secure API proxy server for realtime-translator and other projects",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "vercel dev",
     "build": "vercel build",
