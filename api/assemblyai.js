@@ -1,7 +1,7 @@
 // AssemblyAI WebSocket URL proxy
 const { validateRequest, verifyToken } = require('../lib/security');
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
     // CORS headers
     const allowedOrigin = process.env.ALLOWED_ORIGINS?.split(',')[0] || '*';
     res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
@@ -36,8 +36,35 @@ module.exports = (req, res) => {
             return res.status(500).json({ error: 'AssemblyAI API key not configured' });
         }
         
-        // Generate AssemblyAI WebSocket URL
-        const wsUrl = `wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000&token=${encodeURIComponent(apiKey)}`;
+        // Generate temporary token for AssemblyAI WebSocket
+        console.log('🔗 Requesting AssemblyAI temporary token...');
+        const response = await fetch('https://api.assemblyai.com/v2/realtime/token', {
+            method: 'POST',
+            headers: {
+                'authorization': `Bearer ${apiKey}`,
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                expires_in: 3600 // 1 hour
+            })
+        });
+
+        console.log('📡 AssemblyAI token response status:', response.status);
+
+        if (!response.ok) {
+            const errorBody = await response.text();
+            console.error('❌ AssemblyAI token error:', errorBody);
+            return res.status(response.status).json({ 
+                error: `AssemblyAI token request failed: ${response.status}` 
+            });
+        }
+
+        const tokenData = await response.json();
+        console.log('✅ AssemblyAI temporary token obtained successfully');
+        
+        // Generate WebSocket URL with temporary token
+        const wsUrl = `wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000&token=${tokenData.token}`;
+        console.log('🚀 Generated WebSocket URL (token length):', tokenData.token.length);
         
         // Success response
         res.status(200).json({
